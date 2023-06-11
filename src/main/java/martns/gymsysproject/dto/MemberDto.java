@@ -4,17 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class MemberDto {
-    
+
     private String name;
 
     private String address;
 
-    public String getName() {
-        return name;
-    }
+    private String memberCpf;
 
-    public String getAddress() {
-        return address;
-    }
-    
 }

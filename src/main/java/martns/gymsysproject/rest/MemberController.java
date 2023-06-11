@@ -33,10 +33,11 @@ public class MemberController {
 
             String name = memberDtoRequest.getName();
             String address = memberDtoRequest.getAddress();
+            String cpf = memberDtoRequest.getMemberCpf();
             boolean isMembershipPaid = true;
             LocalDate lastPaymentDate = LocalDate.now();
 
-            memberService.createMember(name, address, isMembershipPaid, lastPaymentDate);
+            memberService.createMember(name, address, isMembershipPaid, lastPaymentDate, cpf);
 
             return ResponseEntity.ok("Membro salvo com sucesso!");
 

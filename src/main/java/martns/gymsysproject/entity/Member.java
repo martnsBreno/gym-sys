@@ -32,4 +32,7 @@ public class Member {
 
     @Column(name = "last_payment_date")
     private LocalDate lastPaymentDate;
+
+    @Column(name = "cpf")
+    private String memberCpf;
 }
