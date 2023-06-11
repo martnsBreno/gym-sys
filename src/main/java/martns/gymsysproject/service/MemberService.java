@@ -26,7 +26,6 @@ public class MemberService {
 
         member.setName(name);
         member.setAddress(address);
-        member.setMembershipPaid(isMembershipPaid);
         member.setLastPaymentDate(lastPaymentDate);
         member.setMemberCpf(cpf);
 
@@ -37,15 +36,22 @@ public class MemberService {
 
     private void verificarMembroCadastrado(Member member) {
 
-        Optional<Member> memberDb = memberRepository.findBymemberCpf(member.getMemberCpf());
+        Optional<Member> memberDb = memberRepository.findByMemberCpf(member.getMemberCpf());
 
         if(memberDb.isPresent()) throw new PersistenceException("CPF já cadastrado na base de dados!");
 
     }
 
-    public Member findMemberByName(String name) {
+    public Optional<Member> findMemberByCpf(String cpf) throws Exception {
+        
+        Optional<Member> member = memberRepository.findByMemberCpf(cpf);
 
-        return memberRepository.findByName(name);
+        if(member.isPresent()) {
+            return member;
+        } else {
+            throw new Exception("Membro nao encontrado para esse CPF");
+        }
+        
     }
 
     public void deleteMember(Long memberId) {

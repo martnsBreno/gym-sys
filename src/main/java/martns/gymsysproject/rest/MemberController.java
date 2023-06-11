@@ -1,6 +1,7 @@
 package martns.gymsysproject.rest;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +47,12 @@ public class MemberController {
         }
     }
 
-    @GetMapping(path = "/findMemberWithName")
-    public ResponseEntity<Member> findMemberByName(String name) {
+    @GetMapping(path = "/findMemberByCpf")
+    public ResponseEntity<Optional<Member>> findMemberByName(String cpf) {
 
         try {
 
-            Member member = memberService.findMemberByName(name);
+            Optional<Member> member = memberService.findMemberByCpf(cpf);
 
             return ResponseEntity.ok(member);
 

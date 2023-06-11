@@ -27,9 +27,6 @@ public class Member {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "is_membership_paid")
-    private boolean isMembershipPaid;
-
     @Column(name = "last_payment_date")
     private LocalDate lastPaymentDate;
 

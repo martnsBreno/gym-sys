@@ -10,5 +10,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>{
     
     public Member findByName(String name);
 
-    public Optional<Member> findBymemberCpf(String cpf);
+    public Optional<Member> findByMemberCpf(String cpf);
 }
