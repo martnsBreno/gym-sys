@@ -1,6 +1,6 @@
 package martns.gymsysproject.rest;
 
-import java.util.Optional;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +30,13 @@ public class MemberController {
     public ResponseEntity<String> createMember(@RequestBody MemberDto memberDtoRequest) {
 
         try {
+
             String name = memberDtoRequest.getName();
             String address = memberDtoRequest.getAddress();
+            boolean isMembershipPaid = true;
+            LocalDate lastPaymentDate = LocalDate.now();
 
-            memberService.createMember(name, address);
+            memberService.createMember(name, address, isMembershipPaid, lastPaymentDate);
 
             return ResponseEntity.ok("Membro salvo com sucesso!");
 
@@ -52,15 +55,21 @@ public class MemberController {
             return ResponseEntity.ok(member);
 
         } catch (Exception e) {
-            throw new RuntimeException("Não foi possível encontrar o seguinte membro no banco de dados " + e.getMessage());
+            throw new RuntimeException(
+                    "Não foi possível encontrar o seguinte membro no banco de dados " + e.getMessage());
         }
     }
 
     @PostMapping(path = "/deleteMemberById")
     public ResponseEntity<String> deleteMemberById(Long memberId) {
 
+        try {
             memberService.deleteMember(memberId);
 
             return ResponseEntity.ok("Membro deletado com sucesso");
+        } catch (Exception e) {
+            throw new RuntimeException("Ocorreu um erro ao tentar deletar o membro com o Id recebido " + e.getMessage());
+
+        }
     }
 }
