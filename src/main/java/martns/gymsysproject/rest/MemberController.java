@@ -1,5 +1,6 @@
 package martns.gymsysproject.rest;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -62,6 +63,25 @@ public class MemberController {
         }
     }
 
+    @GetMapping(path = "/checkMembership")
+    public ResponseEntity<String> checkMembership(Long id) {
+
+        try {
+
+            String statusOfMembership = memberService.checkIfMembershipIsValid(id) ? "Matrícula Válida!"
+                    : "Matrícula Expirada!";
+
+            return ResponseEntity.ok(statusOfMembership);
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Ocorreu um erro ao checar o status da matrícula" + e.getMessage());
+
+        }
+
+    }
+
     @PostMapping(path = "/deleteMemberById")
     public ResponseEntity<String> deleteMemberById(Long memberId) {
 
@@ -70,7 +90,8 @@ public class MemberController {
 
             return ResponseEntity.ok("Membro deletado com sucesso");
         } catch (Exception e) {
-            throw new RuntimeException("Ocorreu um erro ao tentar deletar o membro com o Id recebido " + e.getMessage());
+            throw new RuntimeException(
+                    "Ocorreu um erro ao tentar deletar o membro com o Id recebido " + e.getMessage());
 
         }
     }
