@@ -1,6 +1,5 @@
 package martns.gymsysproject.rest;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -31,68 +30,37 @@ public class MemberController {
     @PostMapping(path = "/createMember")
     public ResponseEntity<String> createMember(@RequestBody MemberDto memberDtoRequest) {
 
-        try {
+        String name = memberDtoRequest.getName();
+        String address = memberDtoRequest.getAddress();
+        String cpf = memberDtoRequest.getMemberCpf();
+        boolean isMembershipPaid = true;
+        LocalDate lastPaymentDate = LocalDate.now();
 
-            String name = memberDtoRequest.getName();
-            String address = memberDtoRequest.getAddress();
-            String cpf = memberDtoRequest.getMemberCpf();
-            boolean isMembershipPaid = true;
-            LocalDate lastPaymentDate = LocalDate.now();
+        memberService.createMember(name, address, isMembershipPaid, lastPaymentDate, cpf);
 
-            memberService.createMember(name, address, isMembershipPaid, lastPaymentDate, cpf);
-
-            return ResponseEntity.ok("Membro salvo com sucesso!");
-
-        } catch (Exception e) {
-            throw new RuntimeException("Ocorreu um erro ao salvar um novo membro no banco de dados! " + e.getMessage());
-        }
+        return ResponseEntity.ok("Membro criado com sucesso!");
     }
 
     @GetMapping(path = "/findMemberByCpf")
     public ResponseEntity<Optional<Member>> findMemberByName(String cpf) {
 
-        try {
-
-            Optional<Member> member = memberService.findMemberByCpf(cpf);
-
-            return ResponseEntity.ok(member);
-
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Não foi possível encontrar o seguinte membro no banco de dados " + e.getMessage());
-        }
+        return ResponseEntity.ok(memberService.findMemberByCpf(cpf));
+        
     }
 
     @GetMapping(path = "/checkMembership")
     public ResponseEntity<String> checkMembership(Long id) {
 
-        try {
-
-            String statusOfMembership = memberService.checkIfMembershipIsValid(id) ? "Matrícula Válida!"
-                    : "Matrícula Expirada!";
-
-            return ResponseEntity.ok(statusOfMembership);
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(
-                    "Ocorreu um erro ao checar o status da matrícula" + e.getMessage());
-
-        }
+        return ResponseEntity.ok(memberService.checkIfMembershipIsValid(id));
 
     }
 
     @PostMapping(path = "/deleteMemberById")
-    public ResponseEntity<String> deleteMemberById(Long memberId) {
+    public ResponseEntity<String> deleteMemberById(Long id) {
 
-        try {
-            memberService.deleteMember(memberId);
+        memberService.deleteMember(id);
 
-            return ResponseEntity.ok("Membro deletado com sucesso");
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Ocorreu um erro ao tentar deletar o membro com o Id recebido " + e.getMessage());
+        return ResponseEntity.ok("Membro deletado com sucesso");
 
-        }
     }
 }

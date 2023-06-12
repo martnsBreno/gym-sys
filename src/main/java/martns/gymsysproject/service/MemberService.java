@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import martns.gymsysproject.entity.Member;
+import martns.gymsysproject.exception.CpfJaCadastradoException;
 import martns.gymsysproject.repository.MemberRepository;
 
 @Service
@@ -35,6 +36,7 @@ public class MemberService {
         verificarMembroCadastrado(member);
 
         return memberRepository.save(member);
+
     }
 
     private void verificarMembroCadastrado(Member member) {
@@ -42,39 +44,27 @@ public class MemberService {
         Optional<Member> memberDb = memberRepository.findByMemberCpf(member.getMemberCpf());
 
         if (memberDb.isPresent())
-            throw new PersistenceException("CPF já cadastrado na base de dados!");
+            throw new CpfJaCadastradoException("CPF já cadastrado na base de dados!" + memberDb.get().getMemberCpf());
+    }
+
+    public Optional<Member> findMemberByCpf(String cpf) {
+
+        return memberRepository.findByMemberCpf(cpf);
 
     }
 
-    public Optional<Member> findMemberByCpf(String cpf) throws Exception {
-
-        Optional<Member> member = memberRepository.findByMemberCpf(cpf);
-
-        if (member.isPresent()) {
-            return member;
-        } else {
-            throw new Exception("Membro nao encontrado para esse CPF");
-        }
-
-    }
-
-    public boolean checkIfMembershipIsValid(Long id) throws Exception {
+    public String checkIfMembershipIsValid(Long id) {
 
         Optional<Member> memberDb = memberRepository.findByMemberId(id);
 
-        if (memberDb.isPresent()) {
+        LocalDate memberLastPaymentDate = memberDb.get().getLastPaymentDate();
 
-            LocalDate memberLastPaymentDate = memberDb.get().getLastPaymentDate();
+        LocalDate thisMoment = LocalDate.now();
 
-            LocalDate thisMoment = LocalDate.now();
+        long monthsSinceLastPayment = memberLastPaymentDate.until(thisMoment, ChronoUnit.MONTHS);
 
-            long monthsSinceLastPayment = memberLastPaymentDate.until(thisMoment, ChronoUnit.MONTHS);
-
-            return membershipValidation(monthsSinceLastPayment);
-
-        } else {
-            throw new Exception("Membro nao encontrado para esse ID");
-        }
+        return membershipValidation(monthsSinceLastPayment) ? "Matrícula Válida!"
+                : "Matrícula Expirada!";
 
     }
 
