@@ -1,17 +1,15 @@
 package martns.gymsysproject.service;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-
-import javax.persistence.PersistenceException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import martns.gymsysproject.entity.Member;
 import martns.gymsysproject.exception.CpfJaCadastradoException;
+import martns.gymsysproject.exception.MembroNaoEncontradoException;
 import martns.gymsysproject.repository.MemberRepository;
 
 @Service
@@ -24,7 +22,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public Member createMember(String name, String address, boolean isMembershipPaid, LocalDate lastPaymentDate,
+    public Member createMember(String name, String address, LocalDate lastPaymentDate,
             String cpf) {
         Member member = new Member();
 
@@ -57,19 +55,23 @@ public class MemberService {
 
         Optional<Member> memberDb = memberRepository.findByMemberId(id);
 
-        LocalDate memberLastPaymentDate = memberDb.get().getLastPaymentDate();
+        if (memberDb.isPresent()) {
 
-        LocalDate thisMoment = LocalDate.now();
+            LocalDate memberLastPaymentDate = memberDb.get().getLastPaymentDate();
+            LocalDate thisMoment = LocalDate.now();
+            long monthsSinceLastPayment = memberLastPaymentDate.until(thisMoment, ChronoUnit.MONTHS);
 
-        long monthsSinceLastPayment = memberLastPaymentDate.until(thisMoment, ChronoUnit.MONTHS);
+            return membershipValidation(monthsSinceLastPayment) ? "Matrícula Expirada!"
+                    : "Matrícula Válida!";
 
-        return membershipValidation(monthsSinceLastPayment) ? "Matrícula Válida!"
-                : "Matrícula Expirada!";
+        } else {
+            throw new MembroNaoEncontradoException("Nao foi possível encontrar um membro para o ID: " + id);
+        }
 
     }
 
     private boolean membershipValidation(long monthsSinceLastPayment) {
-        return monthsSinceLastPayment > 1 ? false : true;
+        return monthsSinceLastPayment > 1;
     }
 
     public void deleteMember(Long memberId) {
