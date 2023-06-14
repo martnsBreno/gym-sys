@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Membro nao encontrado")
-public class MembroNaoEncontradoException extends RuntimeException{
+public class AlunoNaoEncontradoException extends RuntimeException{
     
-    public MembroNaoEncontradoException(String message) {
+    public AlunoNaoEncontradoException(String message) {
         super(message);
     }
 
