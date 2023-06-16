@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import martns.gymsysproject.entity.Aluno;
 import martns.gymsysproject.entity.Plano;
-import martns.gymsysproject.exception.CpfJaCadastradoException;
 import martns.gymsysproject.exception.PlanoNaoEncontradoException;
 import martns.gymsysproject.exception.AlunoNaoEncontradoException;
 import martns.gymsysproject.repository.AlunoRepository;
@@ -46,9 +45,15 @@ public class AlunoService {
 
     }
 
-    public Optional<Aluno> findalunoByCpf(String cpf) {
+    public Aluno findAlunoByCpf(String cpf) {
 
-        return alunoRepository.findByalunoCpf(cpf);
+        Optional<Aluno> alunoDb = alunoRepository.findByalunoCpf(cpf);
+
+        if(alunoDb.isPresent()) {
+            return alunoDb.get();
+        } else {
+            throw new AlunoNaoEncontradoException("Aluno não encontrado");
+        }
 
     }
 

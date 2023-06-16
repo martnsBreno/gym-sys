@@ -1,7 +1,6 @@
 package martns.gymsysproject.rest;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -40,12 +39,19 @@ public class AlunoController {
         return ResponseEntity.ok("Membro criado com sucesso!");
     }
 
+    @PostMapping(path = "/deleteAlunoById")
+    public ResponseEntity<String> deleteAlunoByid(Long id) {
+
+        alunoService.deletealuno(id);
+
+        return ResponseEntity.ok("Membro deletado com sucesso");
+
+    }
+
     @GetMapping(path = "/findAlunoByCpf")
     public ResponseEntity<String> findAlunoByCpf(String cpf) {
 
-        Optional<Aluno> aluno = alunoService.findalunoByCpf(cpf);
-
-        Aluno alunoDb = aluno.get();
+        Aluno alunoDb = alunoService.findAlunoByCpf(cpf);
 
         String resposta = "  Aluno encontrado: " + alunoDb.getNome() + "\n Endereco: " + alunoDb.getEndereco()
                 + " \n Data do último pagamento: " + alunoDb.getDataUltimoPagamento() + "\n Detalhes do plano: "
@@ -63,12 +69,4 @@ public class AlunoController {
 
     }
 
-    @PostMapping(path = "/deleteAlunoById")
-    public ResponseEntity<String> deleteAlunoByid(Long id) {
-
-        alunoService.deletealuno(id);
-
-        return ResponseEntity.ok("Membro deletado com sucesso");
-
-    }
 }
