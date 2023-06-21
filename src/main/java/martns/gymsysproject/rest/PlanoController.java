@@ -1,8 +1,7 @@
 package martns.gymsysproject.rest;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +22,11 @@ public class PlanoController {
     }
 
     @PostMapping(path = "/createPlano")
-    public String criarPlano(@RequestBody PlanoDto planoDto) {
+    public ResponseEntity<String> criarPlano(@RequestBody PlanoDto planoDto) {
 
         planoService.createPlano(planoDto.getNome(), planoDto.getDescricao(), planoDto.getValor(), planoDto.getAcessos());
 
-        return "Teste";
+        return ResponseEntity.ok("Plano criado com sucesso!");
     }
 
     @PostMapping(path = "/deletePlano")
@@ -36,7 +35,10 @@ public class PlanoController {
     }
 
     @GetMapping(path = "/findPlano")
-    public Optional<Plano> findPlano(Long id) {
-        return planoService.findPlano(id);
+    public ResponseEntity<Plano> findPlano(Long id) {
+
+        Plano planoDb = planoService.findPlano(id);
+        
+        return ResponseEntity.ok(planoDb);
     }
 }

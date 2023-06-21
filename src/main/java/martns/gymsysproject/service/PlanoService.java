@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import martns.gymsysproject.entity.Plano;
+import martns.gymsysproject.exception.PlanoNaoEncontradoException;
 import martns.gymsysproject.repository.PlanoRepository;
 
 @Service
@@ -30,15 +31,17 @@ public class PlanoService {
         return planoRepository.save(plano);
     }
 
-    public Optional<Plano> findPlano(Long id) {
-
-        System.out.println("AQUI1");
+    public Plano findPlano(Long id) {
 
         Optional<Plano> plano = planoRepository.findById(id);
 
+        if (plano.isEmpty()) {
+            throw new PlanoNaoEncontradoException("Não foi possível encontrar esse plano");
+        }
+
         System.out.println(plano);
 
-        return plano;
+        return plano.get();
     }
 
     public void deletePlano(Long id) {

@@ -1,6 +1,7 @@
 package martns.gymsysproject.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +24,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Aluno {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_aluno")
@@ -43,8 +46,9 @@ public class Aluno {
     @JoinColumn(name = "id_plano")
     Plano plano;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "aluno")
-    private List<CheckIns> alunoCheckins;
+    private List<CheckIns> checkIns = new ArrayList<>();
 
     @Column(name = "acessos")
     private int acessos;
@@ -59,6 +63,4 @@ public class Aluno {
         this.acessos = acessos;
     }
 
-    
-    
 }

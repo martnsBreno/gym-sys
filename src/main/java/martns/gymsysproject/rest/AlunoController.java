@@ -28,13 +28,7 @@ public class AlunoController {
     @PostMapping(path = "/createaluno")
     public ResponseEntity<String> createAluno(@Valid @RequestBody AlunoDto alunoDtoRequest) {
 
-        String name = alunoDtoRequest.getNome();
-        String address = alunoDtoRequest.getEndereco();
-        String cpf = alunoDtoRequest.getAlunoCpf();
-        LocalDate lastPaymentDate = LocalDate.now();
-        Long plano_id = alunoDtoRequest.getPlano_id();
-
-        alunoService.createaluno(name, address, lastPaymentDate, cpf, plano_id);
+        alunoService.createaluno(alunoDtoRequest.getNome(), alunoDtoRequest.getEndereco(), LocalDate.now(), alunoDtoRequest.getAlunoCpf(), alunoDtoRequest.getPlano_id());
 
         return ResponseEntity.ok("Membro criado com sucesso!");
     }
@@ -49,16 +43,11 @@ public class AlunoController {
     }
 
     @GetMapping(path = "/findAlunoByCpf")
-    public ResponseEntity<String> findAlunoByCpf(String cpf) {
+    public ResponseEntity<Aluno> findAlunoByCpf(String cpf) {
 
         Aluno alunoDb = alunoService.findAlunoByCpf(cpf);
 
-        String resposta = "  Aluno encontrado: " + alunoDb.getNome() + "\n Endereco: " + alunoDb.getEndereco()
-                + " \n Data do último pagamento: " + alunoDb.getDataUltimoPagamento() + "\n Detalhes do plano: "
-                + alunoDb.getPlano().getNome() + " " + alunoDb.getPlano().getDescricao() + "\n Acessos: "
-                + alunoDb.getPlano().getAcessos() + "\n Mensalidade: " + alunoDb.getPlano().getValor();
-
-        return ResponseEntity.ok(resposta);
+        return ResponseEntity.ok(alunoDb);
 
     }
 
